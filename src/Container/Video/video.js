@@ -7,7 +7,7 @@ import { BsFillSkipBackwardCircleFill } from "react-icons/bs";
 import { BsFillFastForwardCircleFill } from "react-icons/bs";
 import { ImVolumeMute2 } from "react-icons/im";
 import { VscUnmute } from "react-icons/vsc";
-import "./style.css"
+import "./style.css";
 
 const VideoPlayer = () => {
   const [youtubeUrl, setYoutubeUrl] = useState("");
@@ -19,7 +19,6 @@ const VideoPlayer = () => {
   const [volume, setVolume] = useState(0.5);
   const [muted, setMuted] = useState(false);
   const [quality, setQuality] = useState("auto");
-  
 
   const playerRef = useRef(null);
 
@@ -111,10 +110,14 @@ const VideoPlayer = () => {
     console.log("event", event);
     const newSpeed = parseFloat(event);
     const player = playerRef.current.getInternalPlayer();
+    console.log("player", player);
     if (player) {
       player.setPlaybackRate(newSpeed);
     }
   };
+
+  const player = playerRef.current.getInternalPlayer();
+  const title = player.videoTitle;
 
   // const handleQualityChange = (event) => {
   //   const newQuality = event.target.value;
@@ -129,7 +132,7 @@ const VideoPlayer = () => {
 
   return (
     <div className="container">
-      <div className="d-flex gap-4 mt-5">
+      <div className="d-flex gap-4 mt-4">
         <input
           type="text"
           className="form-control"
@@ -149,9 +152,8 @@ const VideoPlayer = () => {
 
       <div
         className="mt-3 parent"
-        style={{ height: 650, width: "100%", position: "relative",  }}
+        style={{ height: 730, width: "100%", position: "relative" }}
       >
-
         <div className="child">
           <div
             style={{
@@ -177,12 +179,14 @@ const VideoPlayer = () => {
                 <BsFillPauseCircleFill
                   onClick={handlePlayPause}
                   size={80}
+                  color="#296EFD"
                   style={{ cursor: "pointer" }}
                 />
               ) : (
                 <FaPlayCircle
                   onClick={handlePlayPause}
                   size={80}
+                  color="#296EFD"
                   style={{ cursor: "pointer" }}
                 />
               )}
@@ -230,6 +234,7 @@ const VideoPlayer = () => {
               <BsFillSkipBackwardCircleFill
                 size={80}
                 onClick={handleBackward}
+                color="#296EFD"
                 style={{
                   cursor: "pointer",
                   position: "absolute",
@@ -241,6 +246,7 @@ const VideoPlayer = () => {
               <BsFillFastForwardCircleFill
                 size={80}
                 onClick={handleForward}
+                color="#296EFD"
                 style={{
                   cursor: "pointer",
                   position: "absolute",
@@ -344,11 +350,8 @@ const VideoPlayer = () => {
                 </li>
               </ul>
             </div>
-
-
           </div>
         </div>
-        
 
         <ReactPlayer
           ref={playerRef}
@@ -362,6 +365,10 @@ const VideoPlayer = () => {
           muted={muted}
         />
       </div>
+
+      <p style={{ fontSize: "25px", fontWeight: "bold", marginTop: "5px" }}>
+        {title}
+      </p>
 
       {/* <div>
       <select value={quality} onChange={handleQualityChange}>
