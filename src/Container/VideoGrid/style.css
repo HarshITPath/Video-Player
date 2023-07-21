@@ -1,0 +1,28 @@
+/* Example styles for the video grid and video player containers */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 16px;
+}
+
+.video-player-container {
+  position: relative;
+  width: 100%;
+  padding-top: 10%; /*16:9 aspect ratio (adjust as needed for your videos)*/
+  /* border-radius: 2%; */
+}
+
+.video-player-container .react-player {
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20%;
+}
+
+.video-title {
+  margin-top: 8px;
+  font-weight: bold;
+  text-align: center;
+}
