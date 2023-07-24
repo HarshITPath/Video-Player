@@ -1,8 +1,8 @@
 {
   "name": "Video Player",
   "short_name": "short name",
-  "theme_color": "#3EA6E7",
-  "background_color": "#3EA6E7",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
