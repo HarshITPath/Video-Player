@@ -99,6 +99,7 @@ const VideoPlayer = () => {
     }
   };
 
+
   const handleSpeedChange = (speed) => {
     const player = playerRef.current.getInternalPlayer();
     if (player) {
@@ -116,8 +117,8 @@ const VideoPlayer = () => {
     }
   };
 
-  const player = playerRef.current.getInternalPlayer();
-  const title = player.videoTitle;
+  const player = playerRef.current?.getInternalPlayer();
+  const title = player?.videoTitle;
 
   // const handleQualityChange = (event) => {
   //   const newQuality = event.target.value;
@@ -154,203 +155,205 @@ const VideoPlayer = () => {
         className="mt-3 parent"
         style={{ height: 730, width: "100%", position: "relative" }}
       >
-        <div className="child">
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              alignItems: "center",
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-            }}
-          >
-            {/* Play / Pause Functionality */}
 
+        <div className="child">
             <div
               style={{
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center",
+                flexDirection: "column",
               }}
             >
-              {hovered || playing ? (
-                <BsFillPauseCircleFill
-                  onClick={handlePlayPause}
-                  size={80}
-                  color="#296EFD"
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <FaPlayCircle
-                  onClick={handlePlayPause}
-                  size={80}
-                  color="#296EFD"
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </div>
+              {/* Play / Pause Functionality */}
 
-            {/* Progress Bar Functionality */}
-
-            <div
-              style={{
-                fontSize: "17px",
-                paddingLeft: "10px",
-                paddingRight: "10px",
-                color: "white",
-                width: "100%",
-                fontWeight: "bold",
-                position: "absolute",
-                bottom: "35px",
-              }}
-            >
               <div
-                className="progress"
-                role="progressbar"
-                aria-valuenow={currentTime}
-                aria-valuemin={0}
-                aria-valuemax={duration}
-                onClick={handleSeekMouseUp}
-                style={{ height: "6px" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {hovered || playing ? (
+                  <BsFillPauseCircleFill
+                    onClick={handlePlayPause}
+                    size={80}
+                    color="#296EFD"
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <FaPlayCircle
+                    onClick={handlePlayPause}
+                    size={80}
+                    color="#296EFD"
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </div>
+
+              {/* Progress Bar Functionality */}
+
+              <div
+                style={{
+                  fontSize: "17px",
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  color: "white",
+                  width: "100%",
+                  fontWeight: "bold",
+                  position: "absolute",
+                  bottom: "35px",
+                }}
               >
                 <div
-                  className="progress-bar"
-                  style={{ width: `${progress}%` }}
-                ></div>
+                  className="progress"
+                  role="progressbar"
+                  aria-valuenow={currentTime}
+                  aria-valuemin={0}
+                  aria-valuemax={duration}
+                  onClick={handleSeekMouseUp}
+                  style={{ height: "6px" }}
+                >
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
               </div>
-            </div>
 
-            {/* Forward / Backward Functionality */}
+              {/* Forward / Backward Functionality */}
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <BsFillSkipBackwardCircleFill
-                size={80}
-                onClick={handleBackward}
-                color="#296EFD"
+              <div
                 style={{
-                  cursor: "pointer",
-                  position: "absolute",
-                  top: "44%",
-                  left: "20%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              />
+              >
+                <BsFillSkipBackwardCircleFill
+                  size={80}
+                  onClick={handleBackward}
+                  color="#296EFD"
+                  style={{
+                    cursor: "pointer",
+                    position: "absolute",
+                    top: "44%",
+                    left: "20%",
+                  }}
+                />
 
-              <BsFillFastForwardCircleFill
-                size={80}
-                onClick={handleForward}
-                color="#296EFD"
+                <BsFillFastForwardCircleFill
+                  size={80}
+                  onClick={handleForward}
+                  color="#296EFD"
+                  style={{
+                    cursor: "pointer",
+                    position: "absolute",
+                    top: "44%",
+                    right: "20%",
+                  }}
+                />
+              </div>
+
+              {/* Mute / Unmute & Timing Functionality */}
+
+              <div
                 style={{
-                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
                   position: "absolute",
-                  top: "44%",
-                  right: "20%",
-                }}
-              />
-            </div>
-
-            {/* Mute / Unmute & Timing Functionality */}
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                position: "absolute",
-                bottom: "5px",
-                left: "15px",
-                color: "white",
-                gap: 8,
-              }}
-            >
-              {muted ? (
-                <ImVolumeMute2 size={25} onClick={() => toggleMuted(false)} />
-              ) : (
-                <VscUnmute size={25} onClick={() => toggleMuted(true)} />
-              )}
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.1"
-                value={volume}
-                onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-                hidden={muted}
-              />
-              {Math.floor(currentTime / 60) +
-                ":" +
-                ("0" + Math.floor(currentTime % 60)).slice(-2)}
-              /{toTimeString(duration)}
-            </div>
-
-            {/* Speed Functionality */}
-
-            <div
-              class="btn-group dropup"
-              style={{
-                position: "absolute",
-                bottom: "1px",
-                right: "10%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SiSpeedtest
-                style={{
-                  height: "27px",
-                  width: "27px",
-                  cursor: "pointer",
+                  bottom: "5px",
+                  left: "15px",
                   color: "white",
+                  gap: 8,
                 }}
-                data-bs-toggle="dropdown"
-              />
-              <ul class="dropdown-menu">
-                <li>
-                  <button
-                    class="dropdown-item"
-                    onClick={() => handleSpeedChangeNew(0.5)}
-                    value={0.5}
-                  >
-                    0.5x
-                  </button>
-                </li>
-                <li>
-                  <button
-                    class="dropdown-item"
-                    onClick={() => handleSpeedChangeNew(1)}
-                    value={1}
-                  >
-                    1x
-                  </button>
-                </li>
-                <li>
-                  <button
-                    class="dropdown-item"
-                    onClick={() => handleSpeedChangeNew(1.5)}
-                    value={1.5}
-                  >
-                    1.5x
-                  </button>
-                </li>
-                <li>
-                  <button
-                    class="dropdown-item"
-                    onClick={() => handleSpeedChangeNew(2)}
-                    value={2}
-                  >
-                    2x
-                  </button>
-                </li>
-              </ul>
+              >
+                {muted ? (
+                  <ImVolumeMute2 size={25} onClick={() => toggleMuted(false)} />
+                ) : (
+                  <VscUnmute size={25} onClick={() => toggleMuted(true)} />
+                )}
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={volume}
+                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                  hidden={muted}
+                />
+                {Math.floor(currentTime / 60) +
+                  ":" +
+                  ("0" + Math.floor(currentTime % 60)).slice(-2)}
+                /{toTimeString(duration)}
+              </div>
+
+              {/* Speed Functionality */}
+
+              <div
+                class="btn-group dropup"
+                style={{
+                  position: "absolute",
+                  bottom: "1px",
+                  right: "10%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SiSpeedtest
+                  style={{
+                    height: "27px",
+                    width: "27px",
+                    cursor: "pointer",
+                    color: "white",
+                  }}
+                  data-bs-toggle="dropdown"
+                />
+                <ul class="dropdown-menu">
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      onClick={() => handleSpeedChangeNew(0.5)}
+                      value={0.5}
+                    >
+                      0.5x
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      onClick={() => handleSpeedChangeNew(1)}
+                      value={1}
+                    >
+                      1x
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      onClick={() => handleSpeedChangeNew(1.5)}
+                      value={1.5}
+                    >
+                      1.5x
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      onClick={() => handleSpeedChangeNew(2)}
+                      value={2}
+                    >
+                      2x
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
             </div>
-          </div>
         </div>
 
         <ReactPlayer
