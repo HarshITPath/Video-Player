@@ -9,8 +9,8 @@ import { ImVolumeMute2 } from "react-icons/im";
 import { VscUnmute } from "react-icons/vsc";
 import "./style.css";
 
-const VideoPlayer = () => {
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+const VideoPlayer = ({ videoId }) => {
+  const [youtubeUrl, setYoutubeUrl] = useState();
   const [playing, setPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -99,7 +99,6 @@ const VideoPlayer = () => {
     }
   };
 
-
   const handleSpeedChange = (speed) => {
     const player = playerRef.current.getInternalPlayer();
     if (player) {
@@ -131,6 +130,26 @@ const VideoPlayer = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // useEffect(() => {
+  //   console.log('playing', playing)
+  //   if (playing) {
+  //     // Add your class to the element here
+  //     const element = document.getElementById('childId'); // Replace 'your-element-id' with the actual ID of your element
+  //     if (element) {
+  //       element.classList.add('parent'); // Replace 'your-class-name' with the name of the class you want to add
+  //     }
+  //   } else {
+  //     // If not playing, remove the class from the element
+  //     const element = document.getElementById('childId');
+  //     if (element) {
+  //       element.classList.remove('child');
+  //     }
+  //   }
+  // }, [playing]);
+  useEffect(() => {
+    videoId && setYoutubeUrl(videoId);
+  }, [videoId]);
+
   return (
     <div className="container">
       <div className="d-flex gap-4 mt-4">
@@ -151,227 +170,234 @@ const VideoPlayer = () => {
         </button>
       </div>
 
-      <div
-        className="mt-3 parent"
-        style={{ height: 730, width: "100%", position: "relative" }}
-      >
-
-        <div className="child">
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "absolute",
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              {/* Play / Pause Functionality */}
-
+      {youtubeUrl && (
+        <>
+          {" "}
+          <div
+            className="mt-3 parent"
+            style={{ height: 730, width: "100%", position: "relative" }}
+          >
+            <div className="child">
               <div
                 style={{
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute",
+                  alignItems: "center",
                   display: "flex",
                   justifyContent: "center",
-                  alignItems: "center",
+                  flexDirection: "column",
                 }}
               >
-                {hovered || playing ? (
-                  <BsFillPauseCircleFill
-                    onClick={handlePlayPause}
-                    size={80}
-                    color="#296EFD"
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <FaPlayCircle
-                    onClick={handlePlayPause}
-                    size={80}
-                    color="#296EFD"
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-              </div>
+                {/* Play / Pause Functionality */}
 
-              {/* Progress Bar Functionality */}
-
-              <div
-                style={{
-                  fontSize: "17px",
-                  paddingLeft: "10px",
-                  paddingRight: "10px",
-                  color: "white",
-                  width: "100%",
-                  fontWeight: "bold",
-                  position: "absolute",
-                  bottom: "35px",
-                }}
-              >
                 <div
-                  className="progress"
-                  role="progressbar"
-                  aria-valuenow={currentTime}
-                  aria-valuemin={0}
-                  aria-valuemax={duration}
-                  onClick={handleSeekMouseUp}
-                  style={{ height: "6px" }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {playing ? (
+                    <BsFillPauseCircleFill
+                      onClick={handlePlayPause}
+                      size={80}
+                      color="#296EFD"
+                      style={{ cursor: "pointer" }}
+                    />
+                  ) : (
+                    <FaPlayCircle
+                      onClick={handlePlayPause}
+                      size={80}
+                      color="#296EFD"
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
+                </div>
+
+                {/* Progress Bar Functionality */}
+
+                <div
+                  style={{
+                    fontSize: "17px",
+                    paddingLeft: "10px",
+                    paddingRight: "10px",
+                    color: "white",
+                    width: "100%",
+                    fontWeight: "bold",
+                    position: "absolute",
+                    bottom: "35px",
+                  }}
                 >
                   <div
-                    className="progress-bar"
-                    style={{ width: `${progress}%` }}
-                  ></div>
+                    className="progress"
+                    role="progressbar"
+                    aria-valuenow={currentTime}
+                    aria-valuemin={0}
+                    aria-valuemax={duration}
+                    onClick={handleSeekMouseUp}
+                    style={{ height: "6px" }}
+                  >
+                    <div
+                      className="progress-bar"
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Forward / Backward Functionality */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <BsFillSkipBackwardCircleFill
+                    size={80}
+                    onClick={handleBackward}
+                    color="#296EFD"
+                    style={{
+                      cursor: "pointer",
+                      position: "absolute",
+                      top: "44%",
+                      left: "20%",
+                    }}
+                  />
+
+                  <BsFillFastForwardCircleFill
+                    size={80}
+                    onClick={handleForward}
+                    color="#296EFD"
+                    style={{
+                      cursor: "pointer",
+                      position: "absolute",
+                      top: "44%",
+                      right: "20%",
+                    }}
+                  />
+                </div>
+
+                {/* Mute / Unmute & Timing Functionality */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    position: "absolute",
+                    bottom: "5px",
+                    left: "15px",
+                    color: "white",
+                    gap: 8,
+                  }}
+                >
+                  {muted ? (
+                    <ImVolumeMute2
+                      size={25}
+                      onClick={() => toggleMuted(false)}
+                    />
+                  ) : (
+                    <VscUnmute size={25} onClick={() => toggleMuted(true)} />
+                  )}
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={volume}
+                    onChange={(e) =>
+                      handleVolumeChange(parseFloat(e.target.value))
+                    }
+                    hidden={muted}
+                  />
+                  {Math.floor(currentTime / 60) +
+                    ":" +
+                    ("0" + Math.floor(currentTime % 60)).slice(-2)}
+                  /{toTimeString(duration)}
+                </div>
+
+                {/* Speed Functionality */}
+
+                <div
+                  className="btn-group dropup"
+                  style={{
+                    position: "absolute",
+                    bottom: "5px",
+                    right: "12%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <SiSpeedtest
+                    style={{
+                      height: "27px",
+                      width: "27px",
+                      cursor: "pointer",
+                      color: "white",
+                    }}
+                    data-bs-toggle="dropdown"
+                  />
+                  <ul className="dropdown-menu">
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => handleSpeedChangeNew(0.5)}
+                        value={0.5}
+                      >
+                        0.5x
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => handleSpeedChangeNew(1)}
+                        value={1}
+                      >
+                        1x
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => handleSpeedChangeNew(1.5)}
+                        value={1.5}
+                      >
+                        1.5x
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => handleSpeedChangeNew(2)}
+                        value={2}
+                      >
+                        2x
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
-
-              {/* Forward / Backward Functionality */}
-
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <BsFillSkipBackwardCircleFill
-                  size={80}
-                  onClick={handleBackward}
-                  color="#296EFD"
-                  style={{
-                    cursor: "pointer",
-                    position: "absolute",
-                    top: "44%",
-                    left: "20%",
-                  }}
-                />
-
-                <BsFillFastForwardCircleFill
-                  size={80}
-                  onClick={handleForward}
-                  color="#296EFD"
-                  style={{
-                    cursor: "pointer",
-                    position: "absolute",
-                    top: "44%",
-                    right: "20%",
-                  }}
-                />
-              </div>
-
-              {/* Mute / Unmute & Timing Functionality */}
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  position: "absolute",
-                  bottom: "5px",
-                  left: "15px",
-                  color: "white",
-                  gap: 8,
-                }}
-              >
-                {muted ? (
-                  <ImVolumeMute2 size={25} onClick={() => toggleMuted(false)} />
-                ) : (
-                  <VscUnmute size={25} onClick={() => toggleMuted(true)} />
-                )}
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={volume}
-                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-                  hidden={muted}
-                />
-                {Math.floor(currentTime / 60) +
-                  ":" +
-                  ("0" + Math.floor(currentTime % 60)).slice(-2)}
-                /{toTimeString(duration)}
-              </div>
-
-              {/* Speed Functionality */}
-
-              <div
-                class="btn-group dropup"
-                style={{
-                  position: "absolute",
-                  bottom: "1px",
-                  right: "10%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <SiSpeedtest
-                  style={{
-                    height: "27px",
-                    width: "27px",
-                    cursor: "pointer",
-                    color: "white",
-                  }}
-                  data-bs-toggle="dropdown"
-                />
-                <ul class="dropdown-menu">
-                  <li>
-                    <button
-                      class="dropdown-item"
-                      onClick={() => handleSpeedChangeNew(0.5)}
-                      value={0.5}
-                    >
-                      0.5x
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="dropdown-item"
-                      onClick={() => handleSpeedChangeNew(1)}
-                      value={1}
-                    >
-                      1x
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="dropdown-item"
-                      onClick={() => handleSpeedChangeNew(1.5)}
-                      value={1.5}
-                    >
-                      1.5x
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      class="dropdown-item"
-                      onClick={() => handleSpeedChangeNew(2)}
-                      value={2}
-                    >
-                      2x
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
             </div>
-        </div>
 
-        <ReactPlayer
-          ref={playerRef}
-          url={youtubeUrl}
-          playing={playing}
-          width="100%"
-          height="100%"
-          onDuration={handleDuration}
-          onProgress={handleProgress}
-          volume={volume}
-          muted={muted}
-        />
-      </div>
-
-      <p style={{ fontSize: "25px", fontWeight: "bold", marginTop: "5px" }}>
-        {title}
-      </p>
+            <ReactPlayer
+              ref={playerRef}
+              url={youtubeUrl}
+              playing={playing}
+              width="100%"
+              height="100%"
+              onDuration={handleDuration}
+              onProgress={handleProgress}
+              volume={volume}
+              muted={muted}
+            />
+          </div>
+          <p style={{ fontSize: "25px", fontWeight: "bold", marginTop: "5px" }}>
+            {title}
+          </p>
+        </>
+      )}
 
       {/* <div>
       <select value={quality} onChange={handleQualityChange}>

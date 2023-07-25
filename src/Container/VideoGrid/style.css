@@ -26,3 +26,11 @@
   font-weight: bold;
   text-align: center;
 }
+
+.blank{
+  /* background-color: red; */
+  height: 86%;
+  width: 100%;
+  position: absolute;
+  top: 14%;
+}
