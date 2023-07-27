@@ -8,6 +8,7 @@ import { BsFillFastForwardCircleFill } from "react-icons/bs";
 import { ImVolumeMute2 } from "react-icons/im";
 import { VscUnmute } from "react-icons/vsc";
 import "./style.css";
+import { motion } from "framer-motion";
 
 const VideoPlayer = ({ videoId }) => {
   const [youtubeUrl, setYoutubeUrl] = useState();
@@ -19,6 +20,7 @@ const VideoPlayer = ({ videoId }) => {
   const [volume, setVolume] = useState(0.5);
   const [muted, setMuted] = useState(false);
   const [quality, setQuality] = useState("auto");
+  const [iconSize, setIconSize] = useState(getIconSize());
 
   const playerRef = useRef(null);
 
@@ -119,47 +121,53 @@ const VideoPlayer = ({ videoId }) => {
   const player = playerRef.current?.getInternalPlayer();
   const title = player?.videoTitle;
 
+  function getIconSize() {
+    if (window.innerWidth <= 576) {
+      return "50px";
+    } else if (window.innerWidth <= 768) {
+      return "60px";
+    } else if (window.innerWidth <= 992) {
+      return "70px";
+    } else {
+      return "80px";
+    }
+  }
+
   // const handleQualityChange = (event) => {
   //   const newQuality = event.target.value;
   //   setQuality(newQuality);
   // };
 
-  useEffect(() => {
-    // Example usage: Get the current time every second
-    const interval = setInterval(getCurrentTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   // useEffect(() => {
-  //   console.log('playing', playing)
-  //   if (playing) {
-  //     // Add your class to the element here
-  //     const element = document.getElementById('childId'); // Replace 'your-element-id' with the actual ID of your element
-  //     if (element) {
-  //       element.classList.add('parent'); // Replace 'your-class-name' with the name of the class you want to add
-  //     }
-  //   } else {
-  //     // If not playing, remove the class from the element
-  //     const element = document.getElementById('childId');
-  //     if (element) {
-  //       element.classList.remove('child');
-  //     }
-  //   }
-  // }, [playing]);
+  //   // Example usage: Get the current time every second
+  //   const interval = setInterval(getCurrentTime, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
     videoId && setYoutubeUrl(videoId);
+    function handleResize() {
+      setIconSize(getIconSize());
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [videoId]);
 
   return (
     <div className="container">
-      <div className="d-flex gap-4 mt-4">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter YouTube video URL"
-          value={youtubeUrl}
-          onChange={(e) => setYoutubeUrl(e.target.value)}
-        />
+      <div className="gap-4 mt-4">
+        <div className="col-xs-12">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter YouTube video URL"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+          />
+        </div>
+        {/* <div className="col-xs-12">
         <button
           style={{ width: "150px" }}
           type="button"
@@ -168,14 +176,14 @@ const VideoPlayer = ({ videoId }) => {
         >
           Play Video
         </button>
+        </div>   */}
       </div>
 
       {youtubeUrl && (
         <>
-          {" "}
           <div
             className="mt-3 parent"
-            style={{ height: 730, width: "100%", position: "relative" }}
+            style={{ width: "100%", position: "relative" }}
           >
             <div className="child">
               <div
@@ -190,41 +198,86 @@ const VideoPlayer = ({ videoId }) => {
                 }}
               >
                 {/* Play / Pause Functionality */}
-
+                {/* Forward / Backward Functionality */}
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     alignItems: "center",
+                    fontSize: iconSize,
+                    // padding: "0 25px",
+                    width: "75%",
                   }}
                 >
-                  {playing ? (
-                    <BsFillPauseCircleFill
-                      onClick={handlePlayPause}
-                      size={80}
-                      color="#296EFD"
-                      style={{ cursor: "pointer" }}
+                  <motion.div
+                    // whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 1.3 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
+                  >
+                    <BsFillSkipBackwardCircleFill
+                      onClick={handleBackward}
+                      color="#ffffff"
+                      style={{
+                        cursor: "pointer",
+                        paddingRight: "5px",
+                      }}
                     />
-                  ) : (
-                    <FaPlayCircle
-                      onClick={handlePlayPause}
-                      size={80}
-                      color="#296EFD"
-                      style={{ cursor: "pointer" }}
+                  </motion.div>
+
+                  <motion.div
+                    // whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 1.3 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
+                  >
+                    {playing ? (
+                      <BsFillPauseCircleFill
+                        onClick={handlePlayPause}
+                        color="#ffffff"
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <FaPlayCircle
+                        onClick={handlePlayPause}
+                        color="#ffffff"
+                        style={{ cursor: "pointer" }}
+                      />
+                    )}
+                  </motion.div>
+
+                  <motion.div
+                    // whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 1.3 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
+                  >
+                    <BsFillFastForwardCircleFill
+                      onClick={handleForward}
+                      color="#ffffff"
+                      style={{
+                        cursor: "pointer",
+                        paddingLeft: "5px",
+                      }}
                     />
-                  )}
+                  </motion.div>
                 </div>
 
                 {/* Progress Bar Functionality */}
-
                 <div
                   style={{
-                    fontSize: "17px",
                     paddingLeft: "10px",
                     paddingRight: "10px",
-                    color: "white",
                     width: "100%",
-                    fontWeight: "bold",
                     position: "absolute",
                     bottom: "35px",
                   }}
@@ -245,51 +298,18 @@ const VideoPlayer = ({ videoId }) => {
                   </div>
                 </div>
 
-                {/* Forward / Backward Functionality */}
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <BsFillSkipBackwardCircleFill
-                    size={80}
-                    onClick={handleBackward}
-                    color="#296EFD"
-                    style={{
-                      cursor: "pointer",
-                      position: "absolute",
-                      top: "44%",
-                      left: "20%",
-                    }}
-                  />
-
-                  <BsFillFastForwardCircleFill
-                    size={80}
-                    onClick={handleForward}
-                    color="#296EFD"
-                    style={{
-                      cursor: "pointer",
-                      position: "absolute",
-                      top: "44%",
-                      right: "20%",
-                    }}
-                  />
-                </div>
-
-                {/* Mute / Unmute & Timing Functionality */}
-
+                {/* Mute / Unmute & Volume Control & Timing Functionality */}
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     position: "absolute",
-                    bottom: "5px",
+                    bottom: "3px",
                     left: "15px",
                     color: "white",
                     gap: 8,
+                    fontSize: "15px",
+                    fontWeight: "bold",
                   }}
                 >
                   {muted ? (
@@ -318,7 +338,6 @@ const VideoPlayer = ({ videoId }) => {
                 </div>
 
                 {/* Speed Functionality */}
-
                 <div
                   className="btn-group dropup"
                   style={{
@@ -393,23 +412,11 @@ const VideoPlayer = ({ videoId }) => {
               muted={muted}
             />
           </div>
-          <p style={{ fontSize: "25px", fontWeight: "bold", marginTop: "5px" }}>
+          <p className="title" style={{ fontWeight: "bold", marginTop: "5px" }}>
             {title}
           </p>
         </>
       )}
-
-      {/* <div>
-      <select value={quality} onChange={handleQualityChange}>
-        <option value="auto">Auto</option>
-        <option value="small">Small</option>
-        <option value="medium">Medium</option>
-        <option value="large">Large</option>
-        <option value="hd720">HD</option>
-        <option value="hd1080">Full HD</option>
-        <option value="highres">High Resolution</option>
-      </select>
-      </div> */}
     </div>
   );
 };

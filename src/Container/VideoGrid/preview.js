@@ -17,7 +17,7 @@ const VideoGrid = () => {
   return (
     <div className="container">
       <VideoPlayer videoId={videoId}/>
-      <div className="video-grid">
+      <div className="video-grid" style={{marginTop:"25px"}}>
         {videosdata.map((video, index) => (
           <div key={index} className="video-player-container">
             <ReactPlayer
